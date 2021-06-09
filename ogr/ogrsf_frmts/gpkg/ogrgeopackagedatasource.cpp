@@ -3918,11 +3918,35 @@ int GDALGeoPackageDataset::Create( const char * pszFilename,
                         : SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE) )
         return FALSE;
 
-    /* Default to synchronous=off for performance for new file */
-    if( !bFileExists &&
-        CPLGetConfigOption("OGR_SQLITE_SYNCHRONOUS", nullptr) == nullptr )
+
+    //Check for GPKG_FAST and Turn off Journaling
+    if (CPLTestBool(CSLFetchNameValueDef(papszOptions, "GPKG_FAST", "TRUE")))
     {
-        SQLCommand( hDB, "PRAGMA synchronous = OFF" );
+        int r1 = sqlite3_exec(hDB, "PRAGMA synchronous = OFF", NULL, NULL, NULL);
+        if (r1)
+            CPLError(CE_Warning, CPLE_AppDefined, "pragma set of synchronous to off failed on '%s'",
+                m_pszFilename);
+
+        int r2 = sqlite3_exec(hDB, "PRAGMA journal_mode = OFF", NULL, NULL, NULL);
+        if (r2)
+            CPLError(CE_Warning, CPLE_AppDefined, "pragma set journal_mode to MEMORY failed on '%s'",
+                m_pszFilename);
+#ifdef _DEBUG
+        if (!r1 && !r2)
+            CPLError(CE_Warning, CPLE_AppDefined, "Synchronous and Journal set to off on '%s'",
+                m_pszFilename);
+#endif
+
+    }
+    else
+    {
+        /* Default to synchronous=off for performance for new file */
+        if (!bFileExists &&
+            CPLGetConfigOption("OGR_SQLITE_SYNCHRONOUS", nullptr) == nullptr)
+        {
+            SQLCommand(hDB, "PRAGMA synchronous = OFF");
+        }
+
     }
 
     /* OGR UTF-8 support. If we set the UTF-8 Pragma early on, it */
