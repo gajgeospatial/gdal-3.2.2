@@ -1302,8 +1302,9 @@ int GDALGeoPackageDataset::Open( GDALOpenInfo* poOpenInfo )
 
 
 //		if ((poOpenInfo->nOpenFlags & GDAL_OF_VECTOR) && (poOpenInfo->nOpenFlags & GDAL_OF_GPKG_FASTACCESS))
-		if (poOpenInfo->nOpenFlags & GDAL_OF_GPKG_FASTACCESS)
-			{
+
+        if ((poOpenInfo->nOpenFlags & GDAL_OF_UPDATE) && poOpenInfo->papszOpenOptions && CPLTestBool(CSLFetchNameValueDef(poOpenInfo->papszOpenOptions, "GPKG_FAST", "TRUE")))
+		{
 			int r1 = sqlite3_exec(hDB, "PRAGMA synchronous = OFF", NULL, NULL, NULL);
 			if(r1)
 				CPLError(CE_Warning, CPLE_AppDefined, "pragma set of synchronous to off failed on '%s'",
