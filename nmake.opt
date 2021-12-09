@@ -41,6 +41,7 @@
 # Check version of Visual C++ compiler:
 # nmake -f makefile.vc MSVC_VER=xxxx
 # where xxxx is one of following (older versions no longer supported):
+# 1930 - 17.0(2022)
 # 1920 = 16.0(2019)
 # 1910 = 15.0(2017)
 # 1900 = 14.0(2015)
@@ -709,6 +710,9 @@ HDF5_LIB =	$(HDF5_DIR)\msvc\$(RELEASEDIR)\hdf5.lib
 # for more details.
 # NOTE: SDK recomends that this is full path.
 !IFDEF BUILD64BIT
+!IF $(MSVC_VER) == 1930
+MRSID_DIR =	$(DEV_BASE)\$(MRSID_64_19_DIR)
+!ELSE
 !IF $(MSVC_VER) == 1920
 MRSID_DIR =	$(DEV_BASE)\$(MRSID_64_19_DIR)
 !ELSE
@@ -726,7 +730,11 @@ MRSID_DIR =	$(DEV_BASE)\$(MRSID_64_DIR)
 !ENDIF
 !ENDIF
 !ENDIF
-!ELSE 
+!ENDIF
+!ELSE
+!IF $(MSVC_VER) == 1930
+MRSID_DIR =	$(DEV_BASE)\$(MRSID_32_19_DIR)
+!ELSE
 !IF $(MSVC_VER) == 1920
 MRSID_DIR =	$(DEV_BASE)\$(MRSID_32_19_DIR)
 !ELSE
@@ -740,6 +748,7 @@ MRSID_DIR =	$(DEV_BASE)\$(MRSID_32_15_DIR)
 MRSID_DIR =	$(DEV_BASE)\$(MRSID_32_13_DIR)
 !ELSE
 MRSID_DIR =	$(DEV_BASE)\$(MRSID_32_DIR)
+!ENDIF
 !ENDIF
 !ENDIF
 !ENDIF
