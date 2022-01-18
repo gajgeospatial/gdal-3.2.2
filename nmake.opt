@@ -910,7 +910,7 @@ CURL_INC = -I$(DEV_BASE)/$(CURL_DIR)/include
 !IFNDEF DEBUG
 CURL_LIB = $(DEV_BASE)/$(CURL_DIR)/msvc/$(RELEASEDIR)/libcurl_imp.lib wsock32.lib wldap32.lib winmm.lib
 !ELSE
-CURL_LIB = $(DEV_BASE)/$(CURL_DIR)/msvc/$(DEBUGDIR)/libcurl_imp.lib  wsock32.lib wldap32.lib winmm.lib
+CURL_LIB = $(DEV_BASE)/$(CURL_DIR)/msvc/$(DEBUGDIR)/libcurl-d_imp.lib  wsock32.lib wldap32.lib winmm.lib
 !ENDIF
 # Uncoment following two lines to use libcurl as static library
 #CURL_LIB = $(CURL_DIR)/libcurl.lib wsock32.lib wldap32.lib winmm.lib
